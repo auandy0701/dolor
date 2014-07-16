@@ -1,0 +1,350 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width,user-scalable=no">
+    <link href="jquery.mobile-1.4.3.min.css" type="text/css" rel="stylesheet"/>
+    <link href="jquery.mobile.structure-1.4.3.min.cs" type="text/css" rel="stylesheet"/>
+    <script src="jquery-2.1.1.js" type="text/javascript"></script>
+    <script src="jquery.mobile-1.4.3.min.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+$(function(){
+  document.addEventListener("deviceready", function(){
+      var boton=$("#guardar");
+      
+  boton.tap(function(){
+      //alert("funciona correctamente");
+    var servicio=$("#tipo").val();
+    var nombres=$("#nombre").val();   
+    var dire=$("#dir").val();
+    var tele=$("#tel").val();
+    var corre=$("#correo").val();
+    var lat=$("#latitud").val();
+    var lon=$("#longitud").val();
+    //alert(servicio+nombres+dire+tele+corre+lat+lon);
+    if(servicio!="" && nombres!="" && dire!="" && tele!="" && corre!="" && lat!=""&& lon!="" ){
+    enviar(servicio,nombres, dire, tele, corre, lat, lon);
+    }else{
+    alert("Favor de registrar datos en los campos");
+    }
+  });
+  
+  var hospital=$("#hospital");
+  hospital.tap(function(){      
+    $.ajax({
+    type:"POST",
+    url: "http://hernandez_gonza.260mb.net/Servicios/consultar.php",
+    //url: "consultar.php",
+    data: ({opcion: 'hospital' }),
+    success: consultando
+    });
+  });
+  
+  var farmacia=$("#farmacia");
+  farmacia.tap(function(){      
+    $.ajax({
+    type:"POST",
+    //url: "consultar.php",
+     url: "http://hernandez_gonza.260mb.net/Servicios/consultar.php",
+    data: ({opcion: 'farmacia' }),
+    success: consultando
+    });
+  });
+  
+  var tiendas=$("#tiendas");
+  tiendas.tap(function(){      
+    $.ajax({
+    type:"POST",
+    //url: "consultar.php",
+     url: "http://hernandez_gonza.260mb.net/Servicios/consultar.php",
+    data: ({opcion: 'tiendas' }),
+    success: consultando
+    });
+  });
+  
+  var restaurant=$("#restaurant");
+  restaurant.tap(function(){      
+    $.ajax({
+    type:"POST",
+   // url: "consultar.php",
+    url: "http://hernandez_gonza.260mb.net/Servicios/consultar.php",
+    data: ({opcion: 'restaurant' }),
+    success: consultando
+    });
+  });
+  
+  var hotel=$("#hotel");
+  hotel.tap(function(){      
+    $.ajax({
+    type:"POST",
+    //url: "consultar.php",
+     url: "http://hernandez_gonza.260mb.net/Servicios/consultar.php",
+    data: ({opcion: 'hotel' }),
+    success: consultando
+    });
+  });
+  
+  function consultando(data){
+ var registro=$.parseJSON(data);
+ var mostrar=$("#datos");
+ mostrar.html('<table id="tabla">');
+ var tab=$("#tabla");
+ tab.html('<tr style="color:white; background-color:black;" ><th> Id_servicio </th><th> Tipo</th><th> Nombre </th><th> Direccion </th><th> Telefono </th><th> Correos </th><th> Latitud </th><th> Longitud </th><th> Imagen </th></tr>');
+ for(var i in registro){
+ tab.append(
+ "<tr><td id='1'>" +registro[i].id_servicio+ "</td> "
+ +"<td>" +registro[i].tipo+ "</td>"
+ +"<td>" +registro[i].nombre+ "</td>"
+ +"<td>" +registro[i].direccion+" </td>"
+ +"<td>" +registro[i].telefono+" </td>"
+ +"<td>" +registro[i].correo+" </td>"
+ +"<td>" +registro[i].latitud+" </td>"
+ +"<td>" +registro[i].longitud+" </td>"
+ +"<td>" +registro[i].imagen+ "</td></tr>");
+ }
+tab.append("</table>");
+}
+
+  function enviar(servicio,nombres, dire, tele, corre, lat, lon){
+	$.ajax({
+		type: "POST",
+		//url: "insertar.php",
+                url: "http://hernandez_gonza.260mb.net/Servicios/insertar.php",
+               data: "Servicio="+servicio+"&Nombre="+nombres+"&Dir="+dire+"&Tel="+tele+"&Correos="+corre+"&Lat="+lat+"&Lon="+lon,
+            	success: onSuccess
+                
+	}).done(function(msg){
+		if(msg==1){
+				
+		}else{
+			//navigator.notification.alert("Hubo un error en el registro",null,"Error","Aceptar");
+		}
+	});
+	function onSuccess(data)
+            {            
+	      $(document).ready(function(){
+            $("#tipo").val("");
+            $("#nombre").val("");
+            $("#dir").val("");
+            $("#tel").val("");
+            $("#correo").val("");
+            $("#latitud").val("");
+            $("#longitud").val("");
+            });
+            }
+			
+		//	alert("funciona");
+}
+      
+  });
+  });
+  
+  $(function(){  
+ document.addEventListener("deviceready", function(){  
+    var botoncoordenadas=$("#obtenercord"); 
+    botoncoordenadas.tap(function(){  
+    obtenerCoordenadas();
+    }); 
+        
+  },false);
+});   
+
+function  obtenerCoordenadas(){
+
+if (navigator.geolocation) {
+     navigator.geolocation.getCurrentPosition(obtenerCords, cordsError);
+} else {
+    alert("Tu navegador no soporta o no tiene habilitada la 'Geolocalización'");
+}
+}
+function obtenerCords(position){
+//alert("Latitud:"+position.coords.latitude+" Longitud: "+position.coords.longitude);
+$("#latitud").val(position.coords.latitude);
+$("#longitud").val(position.coords.longitude);
+}
+function cordsError(error){
+alert('codigo:'+error.code+' mensaje:'+error.message);
+}
+
+
+
+    </script>
+    
+    <style type="text/css">
+         [data-role="content"]{
+		
+		background-image:url(imagenes/fon3.jpg);
+                background-size:100%;
+           
+         }
+        #titulo{
+            background:-webkit-linear-gradient(#A9A9A9,#000000);
+        }
+        #footer{
+            background:-webkit-linear-gradient(#000000,#A9A9A9);
+        }
+        #servicio{
+            font-style: italic;
+            color: whitesmoke;
+        }
+        #contenido{
+           // width: 400px;
+            height: auto;
+        }
+    </style>
+    
+    
+</head>
+<body>
+    <div data-role="page" id="principal" style="text-align:center">
+        <div data-role="header" id="titulo" >
+            <p id="servicio"><marquee>Servicios de Libres</marquee></p><img src="imagenes/logo2.png" style="right: 30px; float: right; position:absolute;top:2px;" width="50" height="50"/>
+        </div>
+        <div data-role="content">
+            <table id="tab" align="center">
+                <tr><td><img id="miImg1" src="imagenes/escri.png" align="left"/></td></tr>
+                <tr><td><a href="#opciones" data-role="button" data-transition="pop">Entrar</a></td></tr>
+            </table>
+                        
+        </div>
+        <div data-role="footer" id="footer">
+            <h4 id="servicio"><marquee>Activa Tus Servicios</marquee></h4><img src="imagenes/es.png" style="left: 30px; float: right; position:absolute;top:2px;" width="50" height="50"  />
+        </div>
+    </div>
+    
+    <div data-role="page" id="opciones" style="text-align:center">
+        <div data-role="header" id="titulo" >
+            <a href="#principal" data-role="button" data-rel="back" data-icon="back">Regresar</a>
+            <p id="servicio"><marquee>Opciones</marquee></p><img src="imagenes/logo2.png" style="right: 30px; float: right; position:absolute;top:2px;" width="50" height="50"/>
+        </div>
+        <div data-role="content" >
+            <table  align="center">
+                <tr><td><a href="#captura" data-role="button" data-transition="pop">Capturar</a></td></tr>
+                <tr><td><a href="#consulta" data-role="button" data-transition="pop">Consultar</a></td></tr>
+            </table>
+                        
+        </div>
+        <div data-role="footer" id="footer">
+            <h4 id="servicio"><marquee>Activa Tus Servicios</marquee></h4><img src="imagenes/es.png" style="left: 30px; float: right; position:absolute;top:2px;" width="50" height="50"  />
+        </div>
+    </div>
+    
+    
+    <div data-role="page" id="captura" style="text-align:center">
+        <div data-role="header" id="titulo" >
+            <a href="#principal" data-role="button" data-rel="back" data-icon="back">Regresar</a>
+            <p id="servicio"><marquee>Capturar servicio</marquee></p><img src="imagenes/logo2.png" style="right: 30px; float: right; position:absolute;top:2px;" width="50" height="50"/>
+        </div>
+        <div data-role="content">
+            <table  align="center">
+                <tr>
+                    <td><label>Tipo de servicio</label></td>
+                    <td><select id="tipo" name="tipo">
+                            <option select value=""></option>
+                            <option select value="Hospital">Hospital</option>
+                            <option select value="Farmacia">Farmacia</option>
+                            <option select value="Restaurant">Restaurant</option>
+                            <option select value="Tiendas">Tiendas</option>
+                            <option select value="Hotel">Hotel</option>
+                        </select></td>
+                    
+                </tr>
+                <tr>
+                    <td><label>Nombre del Servicio</label> </td>
+                    <td><input type="text" id="nombre" name="nombre"/></td>
+                </tr>        
+                <tr>
+                    <td><label >Dirección</label></td>
+                    <td><input type="text" id="dir" name="dir"/></td>
+                </tr>     
+                <tr>
+                    <td> <label>Telefono</label></td>
+                    <td><input type="text" id="tel" name="tel"/></td>
+                </tr>   
+                <tr>                            
+                    <td><label>Correo</label></td>
+                    <td> <input type="text" id="correo" name="correo"/></td>
+                </tr>
+                <tr>
+                    <td><label>Latitud</label></td>
+ <!--latitud-->     <td><input type="text" id="latitud" name="latitud" readonly="readonly"/></td>
+                    <!--td><a href="#" data-role="button" data-transition="pop" id="lat" name="lat">Obtener coordenadas</a></td-->
+                </tr>  
+                <tr>
+                    <td><label>Longitud</label></td>
+                    <td> <input type="text" id="longitud" name="longitud" readonly="readonly"/></td>
+                </tr> 
+                <tr>
+                    <td><label></label></td>
+                    <td><a href="#" data-role="button" data-transition="pop" id="obtenercord" name="obtenercord">Obtener coordenadas</a></td>
+                </tr>
+                <tr>
+                    <td><label>Ruta de imagen</label></td>
+                    <td><input type="text" id="ruta" name="ruta"/></td>
+                    <td><label for="camara"></label></td>
+                    <td><a href="#camara" title="Imagen" data-transition="pop" id="camara" name="camara"><img src="imagenes/camara.jpg" border="0" width="60" height="60"></a></td>        
+                </tr>
+                <tr>
+                    <td><label></label></td>
+                    <td><a href="#" data-role="button" id="guardar" name="guardar" >Guardar</a></td>
+                </tr>
+            </table>
+                        
+        </div>
+        <div data-role="footer" id="footer">
+            <h4 id="servicio"><marquee>Activa Tus Servicios</marquee></h4><img src="imagenes/es.png" style="left: 30px; float: right; position:absolute;top:2px;" width="50" height="50"  />
+        </div>
+    </div>
+    <div data-role="page" id="consulta" style="text-align:center">
+        <div data-role="header" id="titulo" >
+            <a href="#principal" data-role="button" data-rel="back" data-icon="back">Regresar</a>
+            <p id="servicio"><marquee>Consulta de servicios</marquee></p><img src="imagenes/logo2.png" style="right: 30px; float: right; position:absolute;top:2px;" width="50" height="50"/>
+        </div>
+        <div data-role="content" >
+            
+        <form>
+            <fieldset data-role="controlgroup" data-type="horizontal">
+                <a href="#mostrar" title="Imagen" data-transition="pop"id="hospital" name="hospital"><img src="imagenes/hos.png" border="0" width="60" height="60"></a>
+                <a href="#mostrar" title="Imagen" data-transition="pop" id="farmacia" name="farmacia"><img src="imagenes/far.jpg" border="0" width="60" height="60"></a>
+                <a href="#mostrar" title="Imagen" data-transition="pop" id="restaurant" name="restaurant"><img src="imagenes/res.png" border="0" width="60" height="60"></a>
+                
+            </fieldset>
+            <fieldset data-role="controlgroup" data-type="horizontal">
+                <a href="#mostrar" title="Imagen" data-transition="pop" id="tiendas" name="tiendas"><img src="imagenes/tien.jpg" border="0" width="60" height="60"></a>
+                <a href="#mostrar" title="Imagen" data-transition="pop" id="hotel" name="hotel"><img src="imagenes/hot.jpg" border="0" width="60" height="60"></a>
+              
+            </fieldset>
+        </form>          
+                        
+        </div>
+        <div data-role="footer" id="footer">
+            <h4 id="servicio"><marquee>Activa Tus Servicios</marquee></h4><img src="imagenes/es.png" style="left: 30px; float: right; position:absolute;top:2px;" width="50" height="50"  />
+        </div>
+    </div>
+    
+    <div data-role="page" id="mostrar" style="text-align:center">
+        <div data-role="header" id="titulo" >
+            <a href="#principal" data-role="button" data-rel="back" data-icon="back">Regresar</a>
+            <p id="servicio"><marquee>Mostrar servicios</marquee></p><img src="imagenes/logo2.png" style="right: 30px; float: right; position:absolute;top:2px;" width="50" height="50"/>
+        </div>
+        <div data-role="content" >
+            <div id="datos">
+  
+            </div> 
+            <table  align="center">
+            <tr>
+                    <td><label></label></td>
+                    <td><a href="#opciones" data-role="button" name="guardar" >Finalizar</a></td>
+                </tr>
+            </table>
+              
+                        
+        </div>
+        <div data-role="footer" id="footer">
+            <h4 id="servicio"><marquee>Activa Tus Servicios</marquee></h4><img src="imagenes/es.png" style="left: 30px; float: right; position:absolute;top:2px;" width="50" height="50"  />
+        </div>
+    </div>
+    
+</body>
+</html>
